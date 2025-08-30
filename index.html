@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator - Complete Investment Planning Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="header__title">SIP Calculator</h1>
+            <p class="header__subtitle">Complete Investment Planning with Accumulation Years</p>
+        </header>
+
+        <div class="tab-container">
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="basic-sip">Enhanced SIP Calculator</button>
+                <button class="tab-btn" data-tab="goal-planning">Goal Planning</button>
+                <button class="tab-btn" data-tab="fund-discovery">Fund Discovery</button>
+                <button class="tab-btn" data-tab="portfolio-builder">Portfolio Builder</button>
+            </nav>
+
+            <div class="tab-content active" id="basic-sip">
+                <div class="calculator-layout">
+                    <div class="calculator-form">
+                        <!-- SIP Configuration Card -->
+                        <div class="card">
+                            <div class="card__header">
+                                <h3>SIP Configuration</h3>
+                                <span class="status status--info">Phase 1: Investment Period</span>
+                            </div>
+                            <div class="card__body">
+                                <div class="form-group">
+                                    <label class="form-label" for="sipAmount">Monthly SIP Amount (₹)</label>
+                                    <input type="number" id="sipAmount" class="form-control" min="500" max="200000" value="10000" step="500">
+                                    <div class="range-labels">
+                                        <span>₹500</span>
+                                        <span>₹2,00,000</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="sipIncrease">Annual SIP Increase (%)</label>
+                                    <input type="number" id="sipIncrease" class="form-control" min="0" max="50" value="10" step="1">
+                                    <div class="range-labels">
+                                        <span>0%</span>
+                                        <span>50%</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="sipDuration">SIP Investment Duration (Years)</label>
+                                    <input type="number" id="sipDuration" class="form-control" min="1" max="40" value="15" step="1">
+                                    <div class="range-labels">
+                                        <span>1 Year</span>
+                                        <span>40 Years</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group highlight-feature">
+                                    <label class="form-label" for="accumulationYears">
+                                        <span class="feature-badge">NEW</span>
+                                        Accumulation Years (Years)
+                                        <span class="tooltip-icon" title="Period after SIP stops but money stays invested for extended compounding">ⓘ</span>
+                                    </label>
+                                    <input type="number" id="accumulationYears" class="form-control" min="0" max="30" value="10" step="1">
+                                    <div class="range-labels">
+                                        <span>0 Years</span>
+                                        <span>30 Years</span>
+                                    </div>
+                                    <small class="form-text">Extended compounding without new contributions</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lumpsum Investment Card -->
+                        <div class="card">
+                            <div class="card__header">
+                                <h3>Lumpsum Investment</h3>
+                                <span class="status status--warning">Optional</span>
+                            </div>
+                            <div class="card__body">
+                                <div class="form-group">
+                                    <label class="form-label" for="lumpsumType">Investment Type</label>
+                                    <select id="lumpsumType" class="form-control">
+                                        <option value="none">No Lumpsum Investment</option>
+                                        <option value="onetime">One-time Lumpsum</option>
+                                        <option value="recurring">Recurring Annual Lumpsum</option>
+                                    </select>
+                                </div>
+
+                                <div id="onetimeLumpsum" class="lumpsum-section hidden">
+                                    <div class="form-group">
+                                        <label class="form-label" for="onetimeAmount">One-time Amount (₹)</label>
+                                        <input type="number" id="onetimeAmount" class="form-control" min="0" max="10000000" value="100000" step="10000">
+                                    </div>
+                                </div>
+
+                                <div id="recurringLumpsum" class="lumpsum-section hidden">
+                                    <div class="form-group">
+                                        <label class="form-label" for="recurringAmount">Annual Amount (₹)</label>
+                                        <input type="number" id="recurringAmount" class="form-control" min="0" max="1000000" value="50000" step="5000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="recurringDuration">Duration (Years)</label>
+                                        <input type="number" id="recurringDuration" class="form-control" min="1" max="40" value="10" step="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="recurringIncrease">Annual Increase (%)</label>
+                                        <input type="number" id="recurringIncrease" class="form-control" min="0" max="20" value="5" step="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Assumptions Card -->
+                        <div class="card">
+                            <div class="card__header">
+                                <h3>Market Assumptions</h3>
+                            </div>
+                            <div class="card__body">
+                                <div class="form-group">
+                                    <label class="form-label" for="expectedReturn">Expected Annual Return (%)</label>
+                                    <input type="number" id="expectedReturn" class="form-control" min="6" max="25" value="12" step="0.5">
+                                    <div class="range-labels">
+                                        <span>6%</span>
+                                        <span>25%</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="inflationRate">Inflation Rate (%)</label>
+                                    <input type="number" id="inflationRate" class="form-control" min="3" max="10" value="6" step="0.5">
+                                    <div class="range-labels">
+                                        <span>3%</span>
+                                        <span>10%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn--primary btn--full-width calculate-btn" id="calculateBtn">
+                            Calculate Investment Plan
+                        </button>
+
+                        <button class="btn btn--secondary btn--full-width" id="exportBtn" style="margin-top: var(--space-8);">
+                            Export Investment Plan
+                        </button>
+                    </div>
+
+                    <div class="calculator-results">
+                        <div id="results-container" class="hidden">
+                            <!-- Summary Cards -->
+                            <div class="results-summary">
+                                <div class="summary-card primary">
+                                    <h4>Final Corpus</h4>
+                                    <div class="amount" id="finalCorpus">₹0</div>
+                                    <small id="totalTimeline">Total Timeline: 0 years</small>
+                                </div>
+                                <div class="summary-card secondary">
+                                    <h4>Real Value</h4>
+                                    <div class="amount" id="realValue">₹0</div>
+                                    <small>Inflation adjusted</small>
+                                </div>
+                            </div>
+
+                            <!-- Phase Breakdown -->
+                            <div class="phase-breakdown">
+                                <div class="phase-card sip-phase">
+                                    <div class="phase-header">
+                                        <span class="phase-icon">📈</span>
+                                        <div>
+                                            <h4>SIP Investment Phase</h4>
+                                            <small id="sipPhaseDuration">Duration: 0 years</small>
+                                        </div>
+                                    </div>
+                                    <div class="phase-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Total Investment</span>
+                                            <span class="metric-value" id="totalInvestment">₹0</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Value at SIP End</span>
+                                            <span class="metric-value" id="sipEndValue">₹0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="phase-card accumulation-phase">
+                                    <div class="phase-header">
+                                        <span class="phase-icon">🎯</span>
+                                        <div>
+                                            <h4>Accumulation Phase</h4>
+                                            <small id="accumulationPhaseDuration">Duration: 0 years</small>
+                                        </div>
+                                    </div>
+                                    <div class="phase-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Additional Growth</span>
+                                            <span class="metric-value" id="accumulationGrowth">₹0</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Final Value</span>
+                                            <span class="metric-value" id="accumulationEndValue">₹0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Charts -->
+                            <div class="charts-container">
+                                <div class="chart-card">
+                                    <h4>Investment Timeline</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="timelineChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="chart-card">
+                                    <h4>Corpus Breakdown</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="breakdownChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Year-wise Projection -->
+                            <div class="projection-table-container">
+                                <h4>Year-wise Projection</h4>
+                                <div class="table-wrapper">
+                                    <table class="projection-table" id="projectionTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Phase</th>
+                                                <th>Annual Investment</th>
+                                                <th>Total Investment</th>
+                                                <th>Corpus Value</th>
+                                                <th>Growth</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="projectionTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="goal-planning">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Goal-Based Investment Planning</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="goal-form">
+                            <div class="form-group">
+                                <label class="form-label" for="goalAmount">Target Amount (₹)</label>
+                                <input type="number" id="goalAmount" class="form-control" min="100000" value="5000000" step="100000">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="goalTimeline">Timeline (Years)</label>
+                                <input type="number" id="goalTimeline" class="form-control" min="1" max="50" value="20" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="riskTolerance">Risk Tolerance</label>
+                                <select id="riskTolerance" class="form-control">
+                                    <option value="conservative">Conservative (6-8% return)</option>
+                                    <option value="moderate" selected>Moderate (9-12% return)</option>
+                                    <option value="aggressive">Aggressive (13-18% return)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn--primary" id="calculateGoalBtn">Calculate Required SIP</button>
+                        </div>
+                        <div id="goalResults" class="goal-results hidden">
+                            <div class="goal-result-card">
+                                <h4>Required Monthly SIP</h4>
+                                <div class="goal-amount" id="requiredSIP">₹0</div>
+                                <p id="goalStrategy"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="fund-discovery">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Mutual Fund Discovery</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="fund-filters">
+                            <div class="filter-group">
+                                <label class="form-label" for="fundCategory">Category</label>
+                                <select id="fundCategory" class="form-control">
+                                    <option value="all">All Categories</option>
+                                    <option value="Large Cap">Large Cap</option>
+                                    <option value="Mid Cap">Mid Cap</option>
+                                    <option value="Small Cap">Small Cap</option>
+                                    <option value="Debt">Debt</option>
+                                    <option value="ELSS">ELSS</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="International">International</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="form-label" for="riskFilter">Risk Level</label>
+                                <select id="riskFilter" class="form-control">
+                                    <option value="all">All Risk Levels</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="fundsList" class="funds-list">
+                            <!-- Funds will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="portfolio-builder">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Portfolio Builder</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="portfolio-builder">
+                            <div class="portfolio-input">
+                                <div class="form-group">
+                                    <label class="form-label" for="portfolioAmount">Total Investment Amount (₹)</label>
+                                    <input type="number" id="portfolioAmount" class="form-control" min="5000" value="100000" step="5000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="portfolioRisk">Risk Profile</label>
+                                    <select id="portfolioRisk" class="form-control">
+                                        <option value="conservative">Conservative</option>
+                                        <option value="moderate" selected>Moderate</option>
+                                        <option value="aggressive">Aggressive</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn--primary" id="generatePortfolioBtn">Generate Recommended Portfolio</button>
+                            </div>
+                            <div id="portfolioRecommendation" class="portfolio-recommendation hidden">
+                                <!-- Portfolio recommendations will be populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
